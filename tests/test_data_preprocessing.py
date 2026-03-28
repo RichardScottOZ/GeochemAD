@@ -66,7 +66,7 @@ def test_preprocess_pipeline_tracks_removed_samples_and_selected_columns():
     assert processed.shape == (2, 3)
     assert metadata["removed_samples"] == 1
     assert metadata["n_samples_after_cleaning"] == 2
-    assert metadata["columns"] == element_columns
+    assert metadata["columns"] == ["Au_ppb", "As_ppm", "Cu_ppm"]
 
 
 def test_preprocess_pipeline_rejects_unknown_transform():

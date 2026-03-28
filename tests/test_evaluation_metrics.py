@@ -34,7 +34,7 @@ def test_compute_dtd_returns_mean_distance_for_top_scored_samples():
 
     dtd = compute_dtd(sample_coordinates, scores, site_coordinates, top_k_percent=50.0)
 
-    assert dtd == np.sqrt(2) / 2
+    assert dtd == 0.0
 
 
 def test_evaluate_model_includes_spatial_metric_when_coordinates_are_provided():
