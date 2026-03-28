@@ -13,7 +13,7 @@ setup(
         "pandas>=2.0.0",
         "scipy>=1.10.0",
         "scikit-learn>=1.3.0",
-        "torch>=2.0.0",
+        "torch>=2.6.0",
         "matplotlib>=3.7.0",
         "seaborn>=0.12.0",
         "tqdm>=4.65.0",

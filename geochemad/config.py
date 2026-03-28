@@ -32,7 +32,7 @@ class PreprocessConfig:
     """Configuration for data preprocessing."""
 
     transform: str = "clr"  # "raw", "clr", "ilr"
-    feature_selection: str = "all"  # "all", "manual", "pca", "causal", "llm"
+    feature_selection: str = "all"  # "all", "manual", "pca"
     pca_variance_ratio: float = 0.95
     handle_abnormal: str = "half_detection_limit"  # "remove", "half_detection_limit"
     abnormal_values: tuple = (-9999, -0.5)
