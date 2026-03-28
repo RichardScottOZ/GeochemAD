@@ -18,6 +18,11 @@ setup(
         "seaborn>=0.12.0",
         "tqdm>=4.65.0",
     ],
+    extras_require={
+        "dev": [
+            "pytest>=8.0.0",
+        ],
+    },
     entry_points={
         "console_scripts": [
             "geochemad-benchmark=scripts.run_benchmark:main",
