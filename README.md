@@ -25,16 +25,16 @@ This repository provides:
 
 ### Dataset Subsets
 
-| ID | Source | Target Element | #Samples | Area (km²) | #Sites |
-|----|--------|---------------|----------|------------|--------|
-| sed1 | Sediment | Au | 1,392 | ~8,523 | 32 |
-| sed2 | Sediment | Cu | 2,994 | ~6,671 | 21 |
-| rock1 | Rock Chip | W | 3,790 | ~3,177 | 7 |
-| rock2 | Rock Chip | Au | 224 | ~2 | 12 |
-| rock3 | Rock Chip | Cu | 9,624 | ~7,423 | 21 |
-| soil1 | Soil | Au | 2,734 | ~5.7 | 14 |
-| soil2 | Soil | Au | 5,163 | ~57 | 17 |
-| soil3 | Soil | Ni | 21,040 | ~2,018 | 13 |
+| ID | Source | Target Element | #Elements | #Samples | Area (km²) | #Sites |
+|----|--------|---------------|-----------|----------|------------|--------|
+| sed1 | Sediment | Au | 124 | 1,392 | ~8,523 | 32 |
+| sed2 | Sediment | Cu | 124 | 2,994 | ~6,671 | 21 |
+| rock1 | Rock Chip | W | 124 | 3,790 | ~3,177 | 7 |
+| rock2 | Rock Chip | Au | 124 | 224 | ~2 | 12 |
+| rock3 | Rock Chip | Cu | 124 | 9,624 | ~7,423 | 21 |
+| soil1 | Soil | Au | 126 | 2,734 | ~5.7 | 14 |
+| soil2 | Soil | Au | 126 | 5,163 | ~57 | 17 |
+| soil3 | Soil | Ni | 126 | 21,040 | ~2,018 | 13 |
 
 ## Installation
 
@@ -56,6 +56,10 @@ The dataset is sourced from the [Geological Survey of Western Australia (GSWA)](
 
 ```bash
 python scripts/download_data.py --info
+
+# samples.csv must include: SAMPLEID, SAMPLETYPE, x, y, and one or more
+# numeric element concentration columns (for example Au_ppb, Cu_ppm)
+# sites.csv must include: SiteID, x, y
 ```
 
 To generate synthetic test data for pipeline validation:
@@ -91,7 +95,7 @@ from geochemad.data.preprocessing import preprocess_pipeline
 from geochemad.models import GeoChemFormer, AutoEncoderAD, ZScore
 from geochemad.evaluation import evaluate_model
 
-# Load dataset
+# Load dataset (expects data/sed1/samples.csv and data/sed1/sites.csv)
 dataset = GeoChemADDataset("sed1", data_dir="data").load()
 
 # Preprocess

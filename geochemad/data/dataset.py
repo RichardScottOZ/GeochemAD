@@ -86,17 +86,60 @@ class GeoChemADDataset:
 
     def _parse_data(self) -> None:
         """Parse loaded DataFrames into arrays."""
+        self._validate_samples_df()
+        self._validate_sites_df()
+
         # Extract coordinates
         self._coordinates = self.samples_df[["x", "y"]].values.astype(np.float64)
+        if not np.isfinite(self._coordinates).all():
+            raise ValueError("Sample coordinates must contain only finite numeric values")
 
         # Identify element concentration columns (exclude metadata)
         metadata_cols = {"SAMPLEID", "SAMPLETYPE", "x", "y", "SiteID", "ProjectID"}
         self._element_columns = [
             col for col in self.samples_df.columns if col not in metadata_cols
         ]
+        if len(self._element_columns) == 0:
+            raise ValueError("Samples data must include at least one element concentration column")
         self._features = self.samples_df[self._element_columns].values.astype(
             np.float64
         )
+        if not np.isfinite(self._features).all():
+            raise ValueError("Element concentration columns must contain only finite numeric values")
+
+    def _validate_samples_df(self) -> None:
+        """Validate the sample table schema before parsing arrays."""
+        if self.samples_df is None or self.samples_df.empty:
+            raise ValueError("Samples data must contain at least one row")
+
+        required_cols = {"SAMPLEID", "SAMPLETYPE", "x", "y"}
+        missing_cols = required_cols.difference(self.samples_df.columns)
+        if missing_cols:
+            missing = ", ".join(sorted(missing_cols))
+            raise ValueError(f"Samples data is missing required columns: {missing}")
+
+    def _validate_sites_df(self) -> None:
+        """Validate the mineralization sites table schema before parsing arrays."""
+        if self.sites_df is None:
+            self.sites_df = pd.DataFrame(columns=["SiteID", "x", "y"])
+            return
+
+        if self.sites_df.empty:
+            required_cols = {"SiteID", "x", "y"}
+            missing_cols = required_cols.difference(self.sites_df.columns)
+            if missing_cols:
+                self.sites_df = pd.DataFrame(columns=["SiteID", "x", "y"])
+            return
+
+        required_cols = {"SiteID", "x", "y"}
+        missing_cols = required_cols.difference(self.sites_df.columns)
+        if missing_cols:
+            missing = ", ".join(sorted(missing_cols))
+            raise ValueError(f"Sites data is missing required columns: {missing}")
+
+        site_coordinates = self.sites_df[["x", "y"]].values.astype(np.float64)
+        if not np.isfinite(site_coordinates).all():
+            raise ValueError("Site coordinates must contain only finite numeric values")
 
     @property
     def coordinates(self) -> np.ndarray:
@@ -185,6 +228,11 @@ class GeoChemADDataset:
             - labels: binary labels (1=positive, 0=negative)
             - indices: combined indices
         """
+        if n_background is not None and n_background < 0:
+            raise ValueError("n_background must be non-negative")
+        if buffer_distance is not None and buffer_distance <= 0:
+            raise ValueError("buffer_distance must be positive")
+
         rng = np.random.RandomState(random_state)
         site_coords = self.site_coordinates
 
